@@ -8,7 +8,7 @@ return {
     config = function()
       vim.schedule(function()
         require("nvim-treesitter.configs").setup({
-          ensure_installed = { "go", "python", "java", "typescript", "scala", "lua", "markdown" },
+          ensure_installed = { "go", "python", "java", "typescript", "lua", "markdown" },
           highlight = {
             enable = true,
             additional_vim_regex_highlighting = false,
