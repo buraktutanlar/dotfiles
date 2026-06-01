@@ -1,4 +1,4 @@
--- LSP configuration for Go, Python, Java, TypeScript, Scala
+-- LSP configuration for Go, Python, Java, TypeScript
 -- Using modern vim.lsp.config API (nvim 0.11+)
 
 return {
@@ -18,7 +18,6 @@ return {
           "pyright",      -- Python
           "jdtls",        -- Java
           "ts_ls",        -- TypeScript/JavaScript (updated from tsserver)
-          "metals",       -- Scala
           "lua_ls",       -- Lua
         },
         automatic_installation = true,
@@ -56,7 +55,6 @@ return {
         pyright = {},
         jdtls = {},
         ts_ls = {},
-        metals = {},
         lua_ls = {
           settings = {
             Lua = {
