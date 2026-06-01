@@ -1,4 +1,5 @@
 -- LSP configuration for Go, Python, Java, TypeScript, Scala
+-- Using modern vim.lsp.config API (nvim 0.11+)
 
 return {
   -- LSP Configuration
@@ -16,71 +17,70 @@ return {
           "gopls",        -- Go
           "pyright",      -- Python
           "jdtls",        -- Java
-          "tsserver",     -- TypeScript/JavaScript
+          "ts_ls",        -- TypeScript/JavaScript (updated from tsserver)
           "metals",       -- Scala
           "lua_ls",       -- Lua
         },
         automatic_installation = true,
       })
 
-      local lspconfig = require("lspconfig")
+      local lsp = vim.lsp
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+      -- Global keymaps for LSP
       local on_attach = function(client, bufnr)
         local opts = { buffer = bufnr, noremap = true, silent = true }
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "gx", vim.lsp.buf.rename, opts)
-        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+        lsp.buf.inlay_hint(bufnr, true)
+        
+        vim.keymap.set("n", "gd", lsp.buf.definition, opts)
+        vim.keymap.set("n", "gy", lsp.buf.type_definition, opts)
+        vim.keymap.set("n", "gi", lsp.buf.implementation, opts)
+        vim.keymap.set("n", "gr", lsp.buf.references, opts)
+        vim.keymap.set("n", "gx", lsp.buf.rename, opts)
+        vim.keymap.set("n", "<leader>ca", lsp.buf.code_action, opts)
         vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
         vim.keymap.set("n", "[c", vim.diagnostic.goto_prev, opts)
         vim.keymap.set("n", "]c", vim.diagnostic.goto_next, opts)
       end
 
-      lspconfig.gopls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          gopls = {
-            gofumpt = true,
-            usePlaceholders = true,
-          },
-        },
-      })
-
-      lspconfig.pyright.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.jdtls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.tsserver.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.metals.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { "vim" },
+      -- Setup servers using vim.lsp.config
+      local servers = {
+        gopls = {
+          settings = {
+            gopls = {
+              gofumpt = true,
+              usePlaceholders = true,
             },
           },
         },
-      })
+        pyright = {},
+        jdtls = {},
+        ts_ls = {},
+        metals = {},
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = {
+                globals = { "vim" },
+              },
+            },
+          },
+        },
+      }
+
+      for server, config in pairs(servers) do
+        local merged_config = vim.tbl_deep_extend("force", {
+          capabilities = capabilities,
+          on_attach = on_attach,
+        }, config or {})
+        
+        lsp.enable(server)
+        for key, value in pairs(merged_config) do
+          vim.lsp.config(server, {
+            [key] = value,
+          })
+        end
+      end
     end,
   },
 
