@@ -51,6 +51,5 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldnestmax = 1
 vim.opt.foldenable = false
 
--- Colors
+-- Colors - Background set here, colorscheme applied by ui.lua plugin
 vim.opt.background = "light"
-vim.cmd.colorscheme("gruvbox")
