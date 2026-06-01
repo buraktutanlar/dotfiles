@@ -12,7 +12,6 @@ vim.opt.ttyfast = true
 vim.opt.termguicolors = true
 
 -- Behavior
-vim.opt.nocompatible = true
 vim.opt.hidden = true
 vim.opt.modelines = 0
 vim.opt.backspace = "indent,eol,start"
